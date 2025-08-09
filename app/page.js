@@ -300,7 +300,7 @@ export default function Home() {
               {/* List right */}
               <ul className="list-disc pl-6 text-gray-700 dark:text-gray-200 space-y-2 mb-6 max-w-xl text-base">
                 <li>
-                  Be-helpful je bezplatná crowdsourcingová platforma, která
+                  Kindly je bezplatná crowdsourcingová platforma, která
                   propojuje lidi s vizemi a dobrovolníky ochotné přispět svými
                   schopnostmi, časem nebo zdroji s cílem přinést pozitivní změnu
                   do společnosti.
