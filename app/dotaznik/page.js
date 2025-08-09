@@ -103,6 +103,7 @@ export default function DotaznikPage() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Použijeme konstantu OPTIONS definovanou mimo komponentu
   const opts = OPTIONS;
@@ -114,6 +115,7 @@ export default function DotaznikPage() {
     e.preventDefault();
     if (sending) return;
     setSending(true);
+    setErrorMsg("");
 
     const formData = new FormData(e.currentTarget);
 
@@ -144,11 +146,22 @@ export default function DotaznikPage() {
     };
 
     try {
-      console.log("ODESÍLÁM:", payload);
-      await new Promise((r) => setTimeout(r, 800));
+      const res = await fetch("/api/dotaznik", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (_) {}
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || "Neznámá chyba");
+      }
       setSent(true);
-    } catch {
-      alert("Chyba při odesílání");
+    } catch (err) {
+      console.error("Submit error", err);
+      setErrorMsg(err.message || "Chyba při odesílání");
     } finally {
       setSending(false);
     }
@@ -415,6 +428,11 @@ export default function DotaznikPage() {
                 )}
               </button>
             </div>
+            {errorMsg && (
+              <p className="text-center text-sm text-red-600 dark:text-red-400 -mt-2">
+                {errorMsg}
+              </p>
+            )}
             <p className="text-center text-[11px] text-gray-500 dark:text-gray-500">
               Děkujeme za vyplnění.
             </p>
