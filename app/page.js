@@ -79,12 +79,31 @@ const sampleProjects = [
   },
 ];
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ProjectCard from "@/components/ProjectCard";
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showDevModal, setShowDevModal] = useState(false);
+
+  const openDevModal = useCallback(() => setShowDevModal(true), []);
+  const closeDevModal = useCallback(() => setShowDevModal(false), []);
+  const devLinkClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      openDevModal();
+    },
+    [openDevModal]
+  );
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") closeDevModal();
+    };
+    if (showDevModal) window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showDevModal, closeDevModal]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -123,29 +142,33 @@ export default function Home() {
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-8">
                 <a
-                  href="#features"
-                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group"
+                  href="#faq"
+                  onClick={devLinkClick}
+                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group cursor-pointer"
                 >
                   FAQ
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-200 group-hover:w-full"></span>
                 </a>
                 <a
-                  href="#testimonials"
-                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group"
+                  href="#onas"
+                  onClick={devLinkClick}
+                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group cursor-pointer"
                 >
                   O nás
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-200 group-hover:w-full"></span>
                 </a>
                 <a
-                  href="#pricing"
-                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group"
+                  href="#blog"
+                  onClick={devLinkClick}
+                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group cursor-pointer"
                 >
                   Blog
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-200 group-hover:w-full"></span>
                 </a>
                 <a
-                  href="#contact"
-                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group"
+                  href="#konakt"
+                  onClick={devLinkClick}
+                  className="text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 relative group cursor-pointer"
                 >
                   Kontakt
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-200 group-hover:w-full"></span>
@@ -158,7 +181,10 @@ export default function Home() {
 
               {/* Register/Login button: minimal, adaptive */}
               {/* Desktop (lg and up): pill with icon and text */}
-              <button className="hidden lg:flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full px-4 py-1.5 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/60 dark:hover:bg-blue-900/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-500/30 group min-h-0">
+              <button
+                onClick={openDevModal}
+                className="hidden lg:flex items-center gap-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full px-4 py-1.5 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/60 dark:hover:bg-blue-900/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-500/30 group min-h-0"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -180,6 +206,7 @@ export default function Home() {
 
               {/* Tablet & Mobile (below lg): icon only, smaller */}
               <button
+                onClick={openDevModal}
                 className="flex lg:hidden items-center justify-center w-9 h-9 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50/60 dark:hover:bg-blue-900/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-500/30"
                 aria-label="Register or Login"
               >
@@ -221,26 +248,30 @@ export default function Home() {
         >
           <div className="px-4 pt-2 pb-4 space-y-2 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
             <a
-              href="#features"
-              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+              href="#faq"
+              onClick={devLinkClick}
+              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors cursor-pointer"
             >
               FAQ
             </a>
             <a
-              href="#testimonials"
-              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+              href="#onas"
+              onClick={devLinkClick}
+              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors cursor-pointer"
             >
               O nás
             </a>
             <a
-              href="#pricing"
-              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+              href="#blog"
+              onClick={devLinkClick}
+              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors cursor-pointer"
             >
               Blog
             </a>
             <a
-              href="#contact"
-              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
+              href="#kontakt"
+              onClick={devLinkClick}
+              className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors cursor-pointer"
             >
               Kontakt
             </a>
@@ -271,6 +302,7 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
+                onClick={openDevModal}
                 size="lg"
                 className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-4 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl group"
               >
@@ -278,6 +310,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
               </Button>
               <Button
+                onClick={openDevModal}
                 variant="outline"
                 size="lg"
                 className="text-lg px-8 py-4 hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl border-2 hover:border-blue-600 hover:text-blue-600"
@@ -292,6 +325,21 @@ export default function Home() {
               </span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Dotazník sekce */}
+      <section>
+        <div className="flex justify-center pt-10">
+          <Link
+            href="/dotaznik" /* replace with real survey URL */
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40"
+          >
+            <ClipboardList className="w-5 h-5" />
+            Vyplnit krátký dotazník
+          </Link>
         </div>
       </section>
 
@@ -533,7 +581,9 @@ export default function Home() {
 
       {/* Projects/Opportunities Section */}
       <section className="pb-10 pt-10 bg-white dark:bg-gray-900 transition-colors duration-300">
-        <p className="text-gray-200 dark:text-gray-600 pl-12">SAMPLE DATA</p>
+        <p className="text-gray-200 dark:text-gray-600 pl-5 pb-5">
+          ILUSTRAČNÍ STRÁNKA
+        </p>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Modern Search bar */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg flex flex-col md:flex-row items-stretch md:items-center gap-2 md:gap-4 px-4 py-4 mb-10 transition-colors duration-300 border border-gray-100 dark:border-gray-700">
@@ -557,7 +607,10 @@ export default function Home() {
               placeholder="How? (Jak se zapojit)"
               disabled
             />
-            <button className="ml-0 md:ml-2 mt-2 md:mt-0 flex items-center justify-center w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-xl text-white transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500">
+            <button
+              onClick={openDevModal}
+              className="ml-0 md:ml-2 mt-2 md:mt-0 flex items-center justify-center w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-xl text-white transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
+            >
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <circle
                   cx="11"
@@ -599,21 +652,6 @@ export default function Home() {
         <NewsletterForm />
       </section>
 
-      {/* Dotazník sekce */}
-      <section>
-        <div className="flex justify-center py-10">
-          <Link
-            href="/dotaznik" /* replace with real survey URL */
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40"
-          >
-            <ClipboardList className="w-5 h-5" />
-            Vyplnit krátký dotazník
-          </Link>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className="dark:bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -625,11 +663,6 @@ export default function Home() {
               <p className="text-gray-400 mb-4">
                 Crowdsourcing platforma, co propojuje lidi.
               </p>
-              <div className="text-sm text-gray-400">
-                <p>Neziskovka</p>
-                <p>Praha, Česká Republika</p>
-                <p>IČO: 12345678</p>
-              </div>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4 text-black dark:text-white">
@@ -639,7 +672,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     O nás
                   </a>
@@ -647,7 +681,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     Pro Média
                   </a>
@@ -655,7 +690,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     FAQ
                   </a>
@@ -663,7 +699,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     Podpora
                   </a>
@@ -678,7 +715,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     Ochrana osobních údajů
                   </a>
@@ -686,7 +724,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     Pravidla použití
                   </a>
@@ -694,7 +733,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     FAQ
                   </a>
@@ -702,7 +742,8 @@ export default function Home() {
                 <li>
                   <a
                     href="#"
-                    className="dark:hover:text-white hover:text-blue-400 transition-colors"
+                    onClick={devLinkClick}
+                    className="dark:hover:text-white hover:text-blue-400 transition-colors cursor-pointer"
                   >
                     Kontakt
                   </a>
@@ -721,10 +762,68 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-300 dark:border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Be-hepful. Všechny práva vyhrazena.</p>
+            <p>&copy; 2025 Kindly. Všechny práva vyhrazena.</p>
           </div>
         </div>
       </footer>
+      {showDevModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={closeDevModal}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="relative w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 animate-fade-in-up"
+          >
+            <button
+              onClick={closeDevModal}
+              aria-label="Zavřít"
+              className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white flex items-center gap-2">
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/40">
+                <AlertIcon />
+              </span>
+              Ve vývoji
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+              Stránka je ve vývoji. Některé funkce nejsou ještě dostupné.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={closeDevModal}
+                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40"
+              >
+                Rozumím
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
+  );
+}
+
+// Simple alert icon (reuses existing lucide icons if imported) or fallback SVG
+function AlertIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4 text-blue-600 dark:text-blue-400"
+    >
+      <path d="M12 9v4" />
+      <path d="M12 17h.01" />
+      <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
   );
 }
