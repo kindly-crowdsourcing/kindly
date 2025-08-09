@@ -22,7 +22,29 @@ const useMountDebug = () => {
   }, []);
 };
 
-const initialState = {
+interface FormState {
+  role: string;
+  projektFunkce: string[];
+  zapojeniPomoc: string[];
+  projektyZajem: string[];
+  motivace: string[];
+  frekvence: string;
+  souhlas: boolean;
+  // Uncontrolled fields that need to be controlled
+  projektFunkceOther: string;
+  zapojeniPomocOther: string;
+  projektyZajemOther: string;
+  motivaceOther: string;
+  feedback: string;
+  email: string;
+}
+
+type FormAction =
+  | { type: "SET"; key: keyof FormState; value: any }
+  | { type: "TOGGLE_IN"; key: keyof FormState; value: string }
+  | { type: "RESET" };
+
+const initialState: FormState = {
   role: "",
   projektFunkce: [],
   zapojeniPomoc: [],
@@ -30,6 +52,13 @@ const initialState = {
   motivace: [],
   frekvence: "",
   souhlas: false,
+  // Initialize new fields
+  projektFunkceOther: "",
+  zapojeniPomocOther: "",
+  projektyZajemOther: "",
+  motivaceOther: "",
+  feedback: "",
+  email: "",
 };
 
 // Moved out of component so object identity stays stable across renders
@@ -79,23 +108,162 @@ const OPTIONS = {
   ],
 };
 
-function reducer(state, action) {
+function reducer(state: FormState, action: FormAction): FormState {
   switch (action.type) {
     case "SET":
       return { ...state, [action.key]: action.value };
     case "TOGGLE_IN":
-      return {
-        ...state,
-        [action.key]: state[action.key].includes(action.value)
-          ? state[action.key].filter((v) => v !== action.value)
-          : [...state[action.key], action.value],
-      };
+      if (
+        action.key !== "role" &&
+        action.key !== "frekvence" &&
+        action.key !== "souhlas"
+      ) {
+        // Arrays only
+        return {
+          ...state,
+          [action.key]: (state[action.key] as string[]).includes(action.value)
+            ? (state[action.key] as string[]).filter(
+                (v: string) => v !== action.value
+              )
+            : [...(state[action.key] as string[]), action.value],
+        };
+      }
+      return state;
     case "RESET":
       return initialState;
     default:
       return state;
   }
 }
+
+interface SectionProps {
+  title: string;
+  desc?: string;
+  children: React.ReactNode;
+}
+
+interface PillRadiosProps {
+  name: string;
+  list: string[];
+  value: string;
+  onChange: (value: string) => void;
+}
+
+interface CheckGridProps {
+  name: string;
+  list: string[];
+  stateKey: keyof FormState;
+}
+
+interface OtherInputProps {
+  label: string;
+  name: string;
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+}
+
+// Components moved outside to prevent re-creation on each render
+const Section = ({ title, desc, children }: SectionProps) => (
+  <fieldset className="border border-blue-100 dark:border-blue-800/50 rounded-xl p-5 bg-white/70 dark:bg-gray-900/40 backdrop-blur-sm">
+    <legend className="px-2 text-sm font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2">
+      <HelpCircle className="w-4 h-4" />
+      {title}
+    </legend>
+    {desc && (
+      <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{desc}</p>
+    )}
+    {children}
+  </fieldset>
+);
+
+const PillRadios = ({ name, list, value, onChange }: PillRadiosProps) => (
+  <div className="flex flex-wrap gap-3">
+    {list.map((v: string) => {
+      const active = v === value;
+      return (
+        <button
+          key={v}
+          type="button"
+          onClick={() => onChange(v)}
+          className={
+            "px-4 py-2 rounded-full text-sm border transition-all " +
+            (active
+              ? "bg-blue-600 text-white shadow border-blue-600"
+              : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-transparent hover:bg-blue-100 dark:hover:bg-blue-900/40")
+          }
+          aria-pressed={active}
+        >
+          {v}
+        </button>
+      );
+    })}
+    <input type="hidden" name={name} value={value} />
+  </div>
+);
+
+interface CheckGridInternalProps extends CheckGridProps {
+  state: FormState;
+  toggleArr: (key: keyof FormState, value: string) => void;
+}
+
+const CheckGrid = ({
+  name,
+  list,
+  stateKey,
+  state,
+  toggleArr,
+}: CheckGridInternalProps) => (
+  <div className="grid sm:grid-cols-2 gap-2">
+    {list.map((v: string) => {
+      const active = (state[stateKey] as string[]).includes(v);
+      return (
+        <label
+          key={v}
+          className={
+            "flex items-start gap-2 text-sm px-3 py-2 rounded-lg border cursor-pointer transition-colors " +
+            (active
+              ? "border-blue-400 bg-blue-50 dark:bg-blue-900/40 dark:border-blue-500"
+              : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-500")
+          }
+        >
+          <input
+            type="checkbox"
+            name={name}
+            value={v}
+            checked={active}
+            onChange={() => toggleArr(stateKey, v)}
+            className="mt-0.5 accent-blue-600"
+          />
+          <span className="text-gray-700 dark:text-gray-200">{v}</span>
+        </label>
+      );
+    })}
+  </div>
+);
+
+const OtherInput = ({
+  label,
+  name,
+  placeholder,
+  value,
+  onChange,
+}: OtherInputProps) => (
+  <div className="mt-4">
+    <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+      {label} (jiné – volitelné)
+    </label>
+    <input
+      type="text"
+      name={name}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40 text-sm text-gray-800 dark:text-gray-100"
+      autoComplete="off"
+    />
+  </div>
+);
 
 export default function DotaznikPage() {
   useMountDebug();
@@ -108,41 +276,34 @@ export default function DotaznikPage() {
   // Použijeme konstantu OPTIONS definovanou mimo komponentu
   const opts = OPTIONS;
 
-  const setField = (key, value) => dispatch({ type: "SET", key, value });
-  const toggleArr = (key, value) => dispatch({ type: "TOGGLE_IN", key, value });
+  const setField = (key: keyof FormState, value: any) =>
+    dispatch({ type: "SET", key, value });
+  const toggleArr = (key: keyof FormState, value: string) =>
+    dispatch({ type: "TOGGLE_IN", key, value });
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (sending) return;
     setSending(true);
     setErrorMsg("");
 
-    const formData = new FormData(e.currentTarget);
-
-    const otherProjekt = formData.get("projektFunkceOther");
-    const otherZapojeni = formData.get("zapojeniPomocOther");
-    const otherProjTyp = formData.get("projektyZajemOther");
-    const otherMotiv = formData.get("motivaceOther");
-    const feedbackVal = formData.get("feedback")?.toString() || "";
-    const emailVal = formData.get("email")?.toString() || "";
-
+    // Now all values are in state instead of FormData
     const payload = {
       ...state,
-      // doplníme případné 'jiné'
+      // doplníme případné 'jiné' - now from state
       projektFunkce: state.projektFunkce.concat(
-        otherProjekt ? [otherProjekt.toString()] : []
+        state.projektFunkceOther ? [state.projektFunkceOther] : []
       ),
       zapojeniPomoc: state.zapojeniPomoc.concat(
-        otherZapojeni ? [otherZapojeni.toString()] : []
+        state.zapojeniPomocOther ? [state.zapojeniPomocOther] : []
       ),
       projektyZajem: state.projektyZajem.concat(
-        otherProjTyp ? [otherProjTyp.toString()] : []
+        state.projektyZajemOther ? [state.projektyZajemOther] : []
       ),
       motivace: state.motivace.concat(
-        otherMotiv ? [otherMotiv.toString()] : []
+        state.motivaceOther ? [state.motivaceOther] : []
       ),
-      feedback: feedbackVal,
-      email: emailVal,
+      // feedback and email are already in state
     };
 
     try {
@@ -161,94 +322,11 @@ export default function DotaznikPage() {
       setSent(true);
     } catch (err) {
       console.error("Submit error", err);
-      setErrorMsg(err.message || "Chyba při odesílání");
+      setErrorMsg((err as Error).message || "Chyba při odesílání");
     } finally {
       setSending(false);
     }
   };
-
-  // Jednoduché komponenty
-  const Section = ({ title, desc, children }) => (
-    <fieldset className="border border-blue-100 dark:border-blue-800/50 rounded-xl p-5 bg-white/70 dark:bg-gray-900/40 backdrop-blur-sm">
-      <legend className="px-2 text-sm font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-2">
-        <HelpCircle className="w-4 h-4" />
-        {title}
-      </legend>
-      {desc && (
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{desc}</p>
-      )}
-      {children}
-    </fieldset>
-  );
-
-  const PillRadios = ({ name, list, value, onChange }) => (
-    <div className="flex flex-wrap gap-3">
-      {list.map((v) => {
-        const active = v === value;
-        return (
-          <button
-            key={v}
-            type="button"
-            onClick={() => onChange(v)}
-            className={
-              "px-4 py-2 rounded-full text-sm border transition-all " +
-              (active
-                ? "bg-blue-600 text-white shadow border-blue-600"
-                : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-transparent hover:bg-blue-100 dark:hover:bg-blue-900/40")
-            }
-            aria-pressed={active}
-          >
-            {v}
-          </button>
-        );
-      })}
-      <input type="hidden" name={name} value={value} />
-    </div>
-  );
-
-  const CheckGrid = ({ name, list, stateKey }) => (
-    <div className="grid sm:grid-cols-2 gap-2">
-      {list.map((v) => {
-        const active = state[stateKey].includes(v);
-        return (
-          <label
-            key={v}
-            className={
-              "flex items-start gap-2 text-sm px-3 py-2 rounded-lg border cursor-pointer transition-colors " +
-              (active
-                ? "border-blue-400 bg-blue-50 dark:bg-blue-900/40 dark:border-blue-500"
-                : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-500")
-            }
-          >
-            <input
-              type="checkbox"
-              name={name}
-              value={v}
-              checked={active}
-              onChange={() => toggleArr(stateKey, v)}
-              className="mt-0.5 accent-blue-600"
-            />
-            <span className="text-gray-700 dark:text-gray-200">{v}</span>
-          </label>
-        );
-      })}
-    </div>
-  );
-
-  const OtherInput = ({ label, name, placeholder }) => (
-    <div className="mt-4">
-      <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-        {label} (jiné – volitelné)
-      </label>
-      <input
-        type="text"
-        name={name}
-        placeholder={placeholder}
-        className="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40 text-sm text-gray-800 dark:text-gray-100"
-        autoComplete="off"
-      />
-    </div>
-  );
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 py-20 px-4">
@@ -297,7 +375,7 @@ export default function DotaznikPage() {
                 name="role"
                 list={opts.role}
                 value={state.role}
-                onChange={(v) => setField("role", v)}
+                onChange={(v: string) => setField("role", v)}
               />
               {state.role && (
                 <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
@@ -314,11 +392,15 @@ export default function DotaznikPage() {
                 name="projektFunkce[]"
                 list={opts.projektFunkce}
                 stateKey="projektFunkce"
+                state={state}
+                toggleArr={toggleArr}
               />
               <OtherInput
                 label="Další funkce"
                 name="projektFunkceOther"
                 placeholder="Např. export dat..."
+                value={state.projektFunkceOther}
+                onChange={(value) => setField("projektFunkceOther", value)}
               />
             </Section>
 
@@ -330,11 +412,15 @@ export default function DotaznikPage() {
                 name="zapojeniPomoc[]"
                 list={opts.zapojeniPomoc}
                 stateKey="zapojeniPomoc"
+                state={state}
+                toggleArr={toggleArr}
               />
               <OtherInput
                 label="Další potřeba"
                 name="zapojeniPomocOther"
                 placeholder="Např. lepší filtr lokality..."
+                value={state.zapojeniPomocOther}
+                onChange={(value) => setField("zapojeniPomocOther", value)}
               />
             </Section>
 
@@ -343,11 +429,15 @@ export default function DotaznikPage() {
                 name="projektyZajem[]"
                 list={opts.projektyZajem}
                 stateKey="projektyZajem"
+                state={state}
+                toggleArr={toggleArr}
               />
               <OtherInput
                 label="Jiný typ"
                 name="projektyZajemOther"
                 placeholder="Např. kultura..."
+                value={state.projektyZajemOther}
+                onChange={(value) => setField("projektyZajemOther", value)}
               />
             </Section>
 
@@ -356,11 +446,15 @@ export default function DotaznikPage() {
                 name="motivace[]"
                 list={opts.motivace}
                 stateKey="motivace"
+                state={state}
+                toggleArr={toggleArr}
               />
               <OtherInput
                 label="Jiná motivace"
                 name="motivaceOther"
                 placeholder="Např. profesní růst..."
+                value={state.motivaceOther}
+                onChange={(value) => setField("motivaceOther", value)}
               />
             </Section>
 
@@ -369,7 +463,7 @@ export default function DotaznikPage() {
                 name="frekvence"
                 list={opts.frekvence}
                 value={state.frekvence}
-                onChange={(v) => setField("frekvence", v)}
+                onChange={(v: string) => setField("frekvence", v)}
               />
               {state.frekvence && (
                 <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
@@ -382,6 +476,8 @@ export default function DotaznikPage() {
               <textarea
                 rows={4}
                 name="feedback"
+                value={state.feedback}
+                onChange={(e) => setField("feedback", e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40 text-sm text-gray-800 dark:text-gray-100 resize-none"
                 placeholder="Např.: Chybí mi funkce pro..."
               />
@@ -394,6 +490,8 @@ export default function DotaznikPage() {
               <input
                 type="email"
                 name="email"
+                value={state.email}
+                onChange={(e) => setField("email", e.target.value)}
                 placeholder="vas@email.cz"
                 className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40 text-sm text-gray-800 dark:text-gray-100 mb-4"
               />
@@ -402,8 +500,10 @@ export default function DotaznikPage() {
               <input
                 type="checkbox"
                 checked={state.souhlas}
-                onChange={(e) => setField("souhlas", e.target.checked)}
-                required
+                onChange={(e) => {
+                  e.stopPropagation();
+                  setField("souhlas", e.target.checked);
+                }}
                 className="mt-0.5 accent-blue-600"
               />
               <span>Souhlasím se zpracováním údajů (GDPR).</span>

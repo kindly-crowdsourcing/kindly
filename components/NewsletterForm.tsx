@@ -1,12 +1,14 @@
 "use client";
 import { useState } from "react";
 
+type Status = "idle" | "loading" | "success" | "error";
+
 export default function NewsletterForm() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState("idle");
+  const [status, setStatus] = useState<Status>("idle");
   const [msg, setMsg] = useState("");
 
-  async function onSubmit(e) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("loading");
     setMsg("");

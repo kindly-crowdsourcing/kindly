@@ -1,12 +1,24 @@
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/mongodb";
+import { NextResponse, NextRequest } from "next/server";
+import { getDatabase } from "@/lib/mongodb";
 
 // Basic allow-list for array fields to prevent unexpected huge payloads
 const ARRAY_LIMIT = 50;
 
-export async function POST(req) {
+interface SurveyData {
+  role?: string;
+  projektFunkce?: string[];
+  zapojeniPomoc?: string[];
+  projektyZajem?: string[];
+  motivace?: string[];
+  frekvence?: string;
+  feedback?: string;
+  email?: string;
+  souhlas?: boolean;
+}
+
+export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
+    const body: SurveyData = await req.json();
 
     // Extract and sanitize
     const {
@@ -29,7 +41,7 @@ export async function POST(req) {
     }
 
     // Convert to safe arrays of strings, trim + cap length
-    const normArr = (val) =>
+    const normArr = (val: unknown) =>
       Array.isArray(val)
         ? val
             .filter((v) => typeof v === "string" && v.trim())
@@ -54,7 +66,7 @@ export async function POST(req) {
       createdAt: new Date(),
     };
 
-    const db = await getDb();
+    const db = await getDatabase();
     const col = db.collection("survey_responses");
     await col.insertOne(doc);
 

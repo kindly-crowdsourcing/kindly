@@ -1,6 +1,16 @@
 import Image from "next/image";
 import { Star } from "lucide-react";
 
+interface ProjectCardProps {
+  imageUrl: string;
+  alt: string;
+  category: string;
+  title: string;
+  description: string;
+  time: string;
+  how: string;
+}
+
 export default function ProjectCard({
   imageUrl,
   alt,
@@ -9,7 +19,7 @@ export default function ProjectCard({
   description,
   time,
   how,
-}) {
+}: ProjectCardProps) {
   return (
     <div className="bg-white/90 dark:bg-gray-900/80 rounded-2xl border border-blue-100 dark:border-blue-900/40 shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-blue-300 dark:hover:border-blue-400/60 hover:bg-blue-50/60 dark:hover:bg-blue-900/40 transition-all duration-300 p-6 flex flex-col gap-3 group">
       <div className="relative mb-3">

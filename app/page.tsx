@@ -33,7 +33,15 @@ import {
   ClipboardList,
 } from "lucide-react";
 
-const sampleProjects = [
+const sampleProjects: Array<{
+  imageUrl: string;
+  alt: string;
+  category: string;
+  title: string;
+  description: string;
+  time: string;
+  how: string;
+}> = [
   {
     imageUrl:
       "https://cbhpraha.cz/wp-content/uploads/2025/06/Hledac-pokladu-2025-1024x576.webp",
@@ -90,7 +98,7 @@ export default function Home() {
   const openDevModal = useCallback(() => setShowDevModal(true), []);
   const closeDevModal = useCallback(() => setShowDevModal(false), []);
   const devLinkClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
       openDevModal();
     },
@@ -98,7 +106,7 @@ export default function Home() {
   );
 
   useEffect(() => {
-    const onKey = (e) => {
+    const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") closeDevModal();
     };
     if (showDevModal) window.addEventListener("keydown", onKey);

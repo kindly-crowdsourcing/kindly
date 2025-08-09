@@ -1,14 +1,18 @@
-import { NextResponse } from "next/server";
-import { getDb } from "@/lib/mongodb";
+import { NextResponse, NextRequest } from "next/server";
+import { getDatabase } from "@/lib/mongodb";
 
-function isValidEmail(email) {
+function isValidEmail(email: string): boolean {
   // simple but good enough
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-export async function POST(req) {
+interface SubscribeRequest {
+  email: string;
+}
+
+export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
+    const { email }: SubscribeRequest = await req.json();
 
     if (typeof email !== "string" || !isValidEmail(email)) {
       return NextResponse.json(
@@ -17,7 +21,7 @@ export async function POST(req) {
       );
     }
 
-    const db = await getDb();
+    const db = await getDatabase();
     const collection = db.collection("subscribers");
 
     // Ensure a unique index once (safe to call repeatedly)
@@ -38,10 +42,10 @@ export async function POST(req) {
     );
 
     return NextResponse.json({ ok: true });
-  } catch (err) {
+  } catch (err: any) {
     // Duplicate key error
     if (err?.code === 11000) {
-      return NextResponse.json({ ok: true }); // already subscribed; don’t leak info
+      return NextResponse.json({ ok: true }); // already subscribed; don't leak info
     }
     console.error(err);
     return NextResponse.json(
