@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "../components/ui/button";
 import { ThemeToggle } from "../components/theme-toggle";
 import NewsletterForm from "../components/NewsletterForm";
+import Link from "next/link";
 import {
   ArrowRight,
   CheckCircle,
@@ -28,9 +29,58 @@ import {
   ArrowDownLeft,
   Lightbulb,
   Mail,
+  MoveHorizontal,
+  ClipboardList,
 } from "lucide-react";
 
+const sampleProjects = [
+  {
+    imageUrl:
+      "https://cbhpraha.cz/wp-content/uploads/2025/06/Hledac-pokladu-2025-1024x576.webp",
+    alt: "Hledač Pokladů Biblická škola",
+    category: "Duchovní růst",
+    title: "Biblická škola - hledač pokladů",
+    description:
+      "Zveme Tě ke studiu biblické školy Hledači pokladů! Tématem ročníku 2025 je proroctví – jedno z nejdůležitějších témat pro dnešní dobu.",
+    time: "1x za 14 dní, v pondělí",
+    how: "Online přes Zoom",
+  },
+  {
+    imageUrl: "ZmrzkaZKolaImg.png",
+    alt: "Zmrzka z kola, Josef Bajzik",
+    category: "Evangelizace, Podnikání",
+    title: "Zmrzka z kola",
+    description:
+      "Bus zastávka Ke Kateřinkám, Opatov. Každý den otevřeno 10:00 - 19:30. Pravidelně projíždíme i Centrálním Parkem na Chodově.",
+    time: "Denně, 10:00-19:30",
+    how: "Osobně",
+  },
+  {
+    imageUrl:
+      "https://hospickridla.cz/wp-content/uploads/2021/01/dobrovolnici_300.jpg",
+    alt: "Pomoc seniorům, Evangelizace",
+    category: "Pomoc seniorům, Evangelizace",
+    title: "Hospic Křídla",
+    description:
+      "Pomoc se zajištěním chodu organizace. Pomoc v rodinách (v případě vyžádání pacienta a pečující rodiny). ",
+    time: "Občas",
+    how: "Osobně",
+  },
+  {
+    imageUrl:
+      "https://6ca6e7d713.clvaw-cdnwnd.com/8fc47a6147ea3857c860570b31772115/200000131-f0fbef0fc1/Bílina%20na%20hřišti%201.webp",
+    alt: "Pomoc dětem, Evangelizace",
+    category: "Pomoc dětem, Evangelizace",
+    title: "Lucie Pohanková",
+    description:
+      "Jsem křesťanka, členka Apoštolské církve (sbor CBH Praha) a sloužím evangeliem lidem na ulicích a v sociálně vyloučených lokalitách především v Ústeckém kraji, kde žiji.",
+    time: "Občas",
+    how: "Osobně",
+  },
+];
+
 import { useState, useEffect } from "react";
+import ProjectCard from "@/components/ProjectCard";
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -199,7 +249,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
+      <section className="pt-32 pb-10 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
@@ -209,11 +259,10 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center">
+            {/* FIX: stabilní H1 bez flex (bránilo shodě při hydrataci) */}
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Zapoj se a spoluvytvářej projekty,
-              <span className="block text-blue-600 dark:text-blue-400">
-                které změní svět!
-              </span>
+              <span className="whitespace-nowrap">Spolu tvoříme</span>{" "}
+              <span className="text-blue-600 dark:text-blue-400">změnu!</span>
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Máte projekt se společenským dopadem nebo zájem se aktivně
@@ -236,6 +285,12 @@ export default function Home() {
                 Chci se zapojit
               </Button>
             </div>
+            <div className="mt-8">
+              {/* site under construction */}
+              <span className="inline-block bg-blue-200 text-blue-900 font-semibold px-4 py-2 rounded-lg shadow-md border border-blue-400">
+                ⚠️ Platforma ve vývoji - Jedná se pouze o ilustrativní stránku.
+              </span>
+            </div>
           </div>
         </div>
       </section>
@@ -251,75 +306,81 @@ export default function Home() {
           <div className="flex flex-col items-center gap-5">
             <div className="flex flex-col md:flex-row w-full justify-center items-center gap-12 lg:gap-25">
               {/* Pyramid left */}
-              <div className="flex flex-col items-center flex-shrink-0">
-                {/* Top row of inverted pyramid */}
-                <div className="flex justify-center gap-16 mb-2">
-                  <div className="flex flex-col items-center group cursor-pointer">
-                    <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 mb-2 transition-transform duration-200 group-hover:scale-110 group-focus:scale-110">
-                      <Users className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+              <div className="flex flex-col items-center flex-shrink-0 select-none">
+                {/* Top row: Visionaries & Volunteers */}
+                <div className="flex justify-center items-center gap-4 mb-2">
+                  {/* Visionaries */}
+                  <div className="flex flex-col items-center w-[100px]">
+                    <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 mb-2">
+                      <Lightbulb className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                     </span>
-                    <span className="dark:text-gray-200 text-gray-700 font-medium mt-1 group-hover:text-blue-700 transition-colors">
-                      Jednotlivci
+                    <span className="text-blue-900 dark:text-blue-200 font-bold text-base mb-1">
+                      Vizionáři
                     </span>
                   </div>
-                  <div className="flex flex-col items-center group cursor-pointer">
-                    <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 mb-2 transition-transform duration-200 group-hover:scale-110 group-focus:scale-110">
-                      <Building2 className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+
+                  {/* Two-way horizontal arrow */}
+                  <span className="flex items-center justify-center">
+                    <MoveHorizontal className="h-8 w-8 text-blue-400 dark:text-blue-300 opacity-80 mb-8" />
+                  </span>
+
+                  {/* Volunteers */}
+                  <div className="flex flex-col items-center w-[100px]">
+                    <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 mb-2">
+                      <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                     </span>
-                    <span className="dark:text-gray-200 text-gray-700 font-medium mt-1 group-hover:text-blue-700 transition-colors">
-                      Organizace
+                    <span className="text-blue-900 dark:text-blue-200 font-bold text-base mb-1">
+                      Dobrovolníci
                     </span>
                   </div>
                 </div>
-                {/* Diagonal arrows from top to bottom */}
-                <div className="flex justify-center items-center gap-32 -mb-2">
+                {/* Diagonal arrows down */}
+                <div className="flex justify-center items-center gap-24 -mb-2">
                   <span
                     className="flex justify-center"
-                    style={{ transform: "rotate(20deg)" }}
+                    style={{ transform: "rotate(25deg)" }}
                   >
                     <ArrowDownRight className="h-8 w-8 text-blue-400 dark:text-blue-300 opacity-80" />
                   </span>
                   <span
                     className="flex justify-center"
-                    style={{ transform: "rotate(-20deg)" }}
+                    style={{ transform: "rotate(-25deg)" }}
                   >
                     <ArrowDownLeft className="h-8 w-8 text-blue-400 dark:text-blue-300 opacity-80" />
                   </span>
                 </div>
-                {/* Bottom of inverted pyramid */}
-                <div className="flex justify-center mt-2">
-                  <div className="flex flex-col items-center group cursor-pointer">
-                    <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 mb-2 transition-transform duration-200 group-hover:scale-110 group-focus:scale-110">
-                      <Heart className="h-7 w-7 text-blue-600 dark:text-blue-400" />
-                    </span>
-                    <span className="dark:text-gray-200 text-gray-700 font-medium mt-1 group-hover:text-blue-700 transition-colors">
-                      Dobrovolnictví
-                    </span>
-                  </div>
+                {/* Bottom: Impact */}
+                <div className="flex flex-col items-center mt-2">
+                  <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-900/30 mb-2">
+                    <Globe className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                  </span>
+                  <span className="text-blue-900 dark:text-blue-200 font-bold text-base">
+                    Společenský dopad
+                  </span>
                 </div>
               </div>
               {/* List right */}
               <ul className="list-disc pl-6 text-gray-700 dark:text-gray-200 space-y-2 mb-6 max-w-xl text-base">
                 <li>
-                  Kindly je bezplatná crowdsourcingová platforma, která
-                  propojuje lidi s vizemi a dobrovolníky ochotné přispět svými
-                  schopnostmi, časem nebo zdroji s cílem přinést pozitivní změnu
-                  do společnosti.
+                  Kindly je bezplatná opensource platforma, která propojuje lidi
+                  s vizemi a dobrovolníky ochotné přispět svými schopnostmi,
+                  časem nebo zdroji s cílem přinést pozitivní změnu do
+                  společnosti.
                 </li>
                 <li>
                   Nezáleží na tom, jestli jsi programátor, ekonom, právník,
                   student, důchodce nebo investor – každý z nás má jedinečné
-                  dary, které jsou důležité a mohou měnit svět kolem nás.
+                  dary, které jsou důležité a mohou měnit svět kolem nás. Pokud
+                  hledáte možnost, jak se zapojit, i pár hodin vašeho času,
+                  vedených ochotou pomoci, může přinést velkou změnu do života
+                  někoho jiného.
                 </li>
                 <li>
-                  Spolupráce nám nejen umožňuje dělat dobro, ale zároveň
-                  zesiluje dopad každého z nás.
+                  Založte si kartu ke svému projektu nebo si najděte aktivní
+                  projekty ve svém okolí a jednoduše se propojte. Spolupráce nám
+                  nejen umožňuje konat dobro, ale zároveň zesiluje dopad každého
+                  z nás.
                 </li>
-                <li>
-                  I pár hodin vašeho času, pokud je veden ochotou pomoci, může
-                  přinést velkou změnu do života někoho jiného.
-                </li>
-                <li>Více o našem příběhu</li>
               </ul>
             </div>
           </div>
@@ -389,6 +450,16 @@ export default function Home() {
                 Lidi, co chtějí přispět svými dovednostmi.
               </p>
             </div>
+            <div className="text-center p-8 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-all duration-300 hover:scale-105 hover:shadow-lg group animate-fade-in-up animation-delay-600">
+              <Building2 className="h-16 w-16 text-yellow-600 dark:text-yellow-400 mx-auto mb-6 group-hover:scale-110 transition-transform duration-300" />
+              <h3 className="uppercase text-xl font-semibold text-gray-900 dark:text-white mb-4 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
+                Organizace (firmy, školy, neziskovky)
+              </h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Instituce hledající partnery pro projekty nebo zapojení (sdílení
+                projektů, teambuildingy).
+              </p>
+            </div>
             <div className="text-center p-8 rounded-xl bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-all duration-300 hover:scale-105 hover:shadow-lg group animate-fade-in-up animation-delay-600">
               <Coins className="h-16 w-16 text-green-600 dark:text-green-400 mx-auto mb-6 group-hover:scale-110 transition-transform duration-300" />
               <h3 className="uppercase text-xl font-semibold text-gray-900 dark:text-white mb-4 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
@@ -396,15 +467,6 @@ export default function Home() {
               </h3>
               <p className="text-gray-600 dark:text-gray-300">
                 Lidi, kteří chtějí finančně podpořit smysluplné projekty.
-              </p>
-            </div>
-            <div className="text-center p-8 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-all duration-300 hover:scale-105 hover:shadow-lg group animate-fade-in-up animation-delay-600">
-              <Building2 className="h-16 w-16 text-yellow-600 dark:text-yellow-400 mx-auto mb-6 group-hover:scale-110 transition-transform duration-300" />
-              <h3 className="uppercase text-xl font-semibold text-gray-900 dark:text-white mb-4 group-hover:text-yellow-600 dark:group-hover:text-yellow-400 transition-colors">
-                Organizace a školy
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Instituce hledající partnery pro spolupráci na projektech.
               </p>
             </div>
           </div>
@@ -516,114 +578,18 @@ export default function Home() {
 
           {/* Cards grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {/* Card 1 */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 flex flex-col gap-2 group">
-              <Image
-                src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80"
-                alt="Project Management Coaching"
-                width={400}
-                height={144}
-                className="rounded-xl h-36 w-full object-cover mb-4 group-hover:scale-[1.03] transition-transform duration-300"
-                style={{ objectFit: "cover", width: "100%", height: "144px" }}
-                unoptimized
+            {sampleProjects.map((project, idx) => (
+              <ProjectCard
+                key={idx}
+                imageUrl={project.imageUrl}
+                alt={project.alt}
+                category={project.category}
+                title={project.title}
+                description={project.description}
+                time={project.time}
+                how={project.how}
               />
-              <span className="inline-block bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300 text-xs font-semibold px-3 py-1 rounded-lg mb-2">
-                Management
-              </span>
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1 text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                Project Management Coaching
-              </h4>
-              <div className="text-xs text-gray-500 dark:text-gray-300 mb-2">
-                By Choosewood Park CDC, Inc.
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Time:</b> 1-5 hours per week
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Type:</b> <span className="text-green-700">Virtual</span>
-              </div>
-            </div>
-            {/* Card 2 */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 flex flex-col gap-2 group">
-              <Image
-                src="https://images.unsplash.com/photo-1448932223592-d1fc686e76ea?auto=format&fit=crop&w=400&q=80"
-                alt="Fundraising Plan Review"
-                width={400}
-                height={144}
-                className="rounded-xl h-36 w-full object-cover mb-4 group-hover:scale-[1.03] transition-transform duration-300"
-                style={{ objectFit: "cover", width: "100%", height: "144px" }}
-                unoptimized
-              />
-              <span className="inline-block bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs font-semibold px-3 py-1 rounded-lg mb-2">
-                Fundraising
-              </span>
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1 text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                Fundraising Plan Review
-              </h4>
-              <div className="text-xs text-gray-500 dark:text-gray-300 mb-2">
-                By Life After The Wall INC
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Time:</b> 1-5 hours per week
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Type:</b> <span className="text-green-700">Virtual</span>
-              </div>
-            </div>
-            {/* Card 3 */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 flex flex-col gap-2 group">
-              <Image
-                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80"
-                alt="Fundraising Prospects Research"
-                width={400}
-                height={144}
-                className="rounded-xl h-36 w-full object-cover mb-4 group-hover:scale-[1.03] transition-transform duration-300"
-                style={{ objectFit: "cover", width: "100%", height: "144px" }}
-                unoptimized
-              />
-              <span className="inline-block bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 text-xs font-semibold px-3 py-1 rounded-lg mb-2">
-                Fundraising
-              </span>
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1 text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                Fundraising Prospects Research
-              </h4>
-              <div className="text-xs text-gray-500 dark:text-gray-300 mb-2">
-                By First Pioneer Valley Dream Center
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Time:</b> 1-5 hours per week
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Type:</b> <span className="text-green-700">Virtual</span>
-              </div>
-            </div>
-            {/* Card 4 */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 flex flex-col gap-2 group">
-              <Image
-                src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80"
-                alt="Vehicle Text Creation"
-                width={400}
-                height={144}
-                className="rounded-xl h-36 w-full object-cover mb-4 group-hover:scale-[1.03] transition-transform duration-300"
-                style={{ objectFit: "cover", width: "100%", height: "144px" }}
-                unoptimized
-              />
-              <span className="inline-block bg-lime-100 dark:bg-lime-900 text-lime-800 dark:text-lime-200 text-xs font-semibold px-3 py-1 rounded-lg mb-2">
-                Communication & PR
-              </span>
-              <h4 className="font-semibold text-gray-900 dark:text-white mb-1 text-lg group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                Vehicle Text Creation
-              </h4>
-              <div className="text-xs text-gray-500 dark:text-gray-300 mb-2">
-                By Outdoor Life Leadership
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Time:</b> 1-5 hours per week
-              </div>
-              <div className="text-xs text-gray-700 dark:text-gray-200 mb-1">
-                <b>Type:</b> <span className="text-green-700">Virtual</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -632,6 +598,22 @@ export default function Home() {
       <section className="pt-12 pb-10 my-12 bg-blue-50 dark:bg-gray-800 border-blue-100 dark:border-gray-700">
         <NewsletterForm />
       </section>
+
+      {/* Dotazník sekce */}
+      <section>
+        <div className="flex justify-center py-10">
+          <Link
+            href="/dotaznik" /* replace with real survey URL */
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40"
+          >
+            <ClipboardList className="w-5 h-5" />
+            Vyplnit krátký dotazník
+          </Link>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="dark:bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -732,7 +714,9 @@ export default function Home() {
                 Kontakt
               </h3>
               <div className="space-y-2 text-gray-400">
-                <a href="mailto:info@kindly.website">info@kindly.website</a>
+                <a href="mailto:kindly.eu.platform@gmail.com">
+                  kindly.eu.platform@gmail.com
+                </a>
               </div>
             </div>
           </div>
