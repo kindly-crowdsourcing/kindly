@@ -173,25 +173,25 @@ export default function Home() {
               href="#features"
               className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
             >
-              Features
+              FAQ
             </a>
             <a
               href="#testimonials"
               className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
             >
-              Testimonials
+              O nás
             </a>
             <a
               href="#pricing"
               className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
             >
-              Pricing
+              Blog
             </a>
             <a
               href="#contact"
               className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
             >
-              Contact
+              Kontakt
             </a>
           </div>
         </div>
