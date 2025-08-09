@@ -191,7 +191,7 @@ export default function Home() {
               href="#contact"
               className="block px-3 py-2 text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800 rounded-md transition-colors"
             >
-              Kontakty
+              Kontakt
             </a>
           </div>
         </div>
