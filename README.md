@@ -1,1 +1,3 @@
 # kindly
+
+Webová crowdsourcingová aplikace
