@@ -340,8 +340,7 @@ export default function Home() {
       <section>
         <div className="flex justify-center pt-10">
           <Link
-            href="/dotaznik" /* replace with real survey URL */
-            target="_blank"
+            href="/dotaznik"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40"
           >
