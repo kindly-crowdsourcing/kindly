@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "../components/ui/button";
+import { ThemeToggle } from "../components/theme-toggle";
+import NewsletterForm from "../components/NewsletterForm";
 import {
   ArrowRight,
   CheckCircle,
@@ -244,7 +245,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in-up">
-              Jak <b>BE-HELPFUL</b> vlastně funguje?
+              Jak <b>KINDLY</b> vlastně funguje?
             </h2>
           </div>
           <div className="flex flex-col items-center gap-5">
@@ -415,7 +416,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fade-in-up">
-              Jaké výhody má <b>BE-HELPFUL</b> platforma?
+              Jaké výhody má <b>KINDLY</b> platforma?
             </h2>
           </div>
           <div className="grid md:grid-cols-5 gap-8">
@@ -629,36 +630,7 @@ export default function Home() {
 
       {/* Newsletter Signup */}
       <section className="pt-12 pb-10 my-12 bg-blue-50 dark:bg-gray-800 border-blue-100 dark:border-gray-700">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            Zůstaňte v obraze!
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Zadejte svůj e-mail a my vám dáme vědět, až bude Behelpful spuštěn.
-          </p>
-          <form className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-lg mx-auto">
-            <input
-              type="email"
-              name="email"
-              required
-              autoComplete="email"
-              placeholder="Váš e-mail"
-              className="w-full sm:w-auto flex-1 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 transition-colors"
-              aria-label="E-mail"
-            />
-            <button
-              type="submit"
-              className="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors duration-200 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500"
-              disabled
-              title="Přihlášení bude brzy dostupné"
-            >
-              Přihlásit se
-            </button>
-          </form>
-          <p className="text-xs text-gray-400 mt-6">
-            Nebudeme posílat spam. Odhlásit se můžete kdykoliv.
-          </p>
-        </div>
+        <NewsletterForm />
       </section>
       {/* Footer */}
       <footer className="dark:bg-gray-900 text-white py-12">
@@ -666,7 +638,7 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="col-span-2 md:col-span-1">
               <div className="text-2xl font-bold text-blue-400 mb-4">
-                behelpful
+                kindly
               </div>
               <p className="text-gray-400 mb-4">
                 Crowdsourcing platforma, co propojuje lidi.
@@ -760,7 +732,7 @@ export default function Home() {
                 Kontakt
               </h3>
               <div className="space-y-2 text-gray-400">
-                <a href="mailto:info@be-helpful.com">info@be-helpful.com</a>
+                <a href="mailto:info@kindly.website">info@kindly.website</a>
               </div>
             </div>
           </div>
