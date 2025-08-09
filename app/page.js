@@ -65,7 +65,7 @@ export default function Home() {
                   className="h-10 w-10"
                 />
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  behelpful
+                  kindly
                 </div>
               </div>
             </div>
