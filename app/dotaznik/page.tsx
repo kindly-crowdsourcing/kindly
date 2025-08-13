@@ -25,14 +25,15 @@ const useMountDebug = () => {
 interface FormState {
   role: string;
   projektFunkce: string[];
-  zapojeniPomoc: string[];
   projektyZajem: string[];
+  projektPopis: string;
+  zeme: string;
+  kraj: string;
   motivace: string[];
   frekvence: string;
   souhlas: boolean;
   // Uncontrolled fields that need to be controlled
   projektFunkceOther: string;
-  zapojeniPomocOther: string;
   projektyZajemOther: string;
   motivaceOther: string;
   feedback: string;
@@ -47,14 +48,15 @@ type FormAction =
 const initialState: FormState = {
   role: "",
   projektFunkce: [],
-  zapojeniPomoc: [],
   projektyZajem: [],
+  projektPopis: "",
+  zeme: "",
+  kraj: "",
   motivace: [],
   frekvence: "",
   souhlas: false,
   // Initialize new fields
   projektFunkceOther: "",
-  zapojeniPomocOther: "",
   projektyZajemOther: "",
   motivaceOther: "",
   feedback: "",
@@ -64,6 +66,53 @@ const initialState: FormState = {
 // Moved out of component so object identity stays stable across renders
 const OPTIONS = {
   role: ["Mám projekt / vizi", "Dobrovolník", "Investor", "Organizace"],
+  zeme: ["Česká republika", "Slovensko", "Polsko"],
+  kraje: {
+    "Česká republika": [
+      "Praha",
+      "Středočeský",
+      "Jihočeský",
+      "Plzeňský",
+      "Karlovarský",
+      "Ústecký",
+      "Liberecký",
+      "Královéhradecký",
+      "Pardubický",
+      "Vysočina",
+      "Jihomoravský",
+      "Olomoucký",
+      "Zlínský",
+      "Moravskoslezský",
+    ],
+    Slovensko: [
+      "Bratislavský",
+      "Trnavský",
+      "Trenčiansky",
+      "Nitriansky",
+      "Žilinský",
+      "Banskobystrický",
+      "Prešovský",
+      "Košický",
+    ],
+    Polsko: [
+      "Mazowieckie",
+      "Śląskie",
+      "Wielkopolskie",
+      "Małopolskie",
+      "Dolnośląskie",
+      "Łódzkie",
+      "Kujawsko-pomorskie",
+      "Pomorskie",
+      "Podlaskie",
+      "Zachodniopomorskie",
+      "Lubelskie",
+      "Warmińsko-mazurskie",
+      "Podkarpackie",
+      "Świętokrzyskie",
+      "Opolskie",
+      "Lubuskie",
+    ],
+  },
   projektFunkce: [
     "Duchovní poradenství",
     "Poradenství v oblasti financí (rozpočty, finanční plány)",
@@ -82,8 +131,6 @@ const OPTIONS = {
     "Gamifikace (odznaky, body)",
     "Možnost hlasovat o prioritách",
     "Open source (přispívat kódem)",
-  ],
-  zapojeniPomoc: [
     "Filtrování podle dovedností",
     "Doporučování projektů (AI)",
     "Krátkodobé mikro‑úkoly",
@@ -295,6 +342,15 @@ export default function DotaznikPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (sending) return;
+
+    // Check GDPR consent
+    if (!state.souhlas) {
+      alert(
+        "Prosím, zaškrtněte souhlas se zpracováním údajů (GDPR) před odesláním formuláře."
+      );
+      return;
+    }
+
     setSending(true);
     setErrorMsg("");
 
@@ -304,9 +360,6 @@ export default function DotaznikPage() {
       // doplníme případné 'jiné' - now from state
       projektFunkce: state.projektFunkce.concat(
         state.projektFunkceOther ? [state.projektFunkceOther] : []
-      ),
-      zapojeniPomoc: state.zapojeniPomoc.concat(
-        state.zapojeniPomocOther ? [state.zapojeniPomocOther] : []
       ),
       projektyZajem: state.projektyZajem.concat(
         state.projektyZajemOther ? [state.projektyZajemOther] : []
@@ -363,6 +416,10 @@ export default function DotaznikPage() {
           <p className="text-gray-600 dark:text-gray-300 text-base max-w-xl mx-auto">
             Pomozte nám prioritizovat funkce platformy <b>KINDLY</b>.
           </p>
+          <p className="text-gray-600 dark:text-gray-300 text-sm mt-5 max-w-xl mx-auto">
+            Data, která vyplníte jsou pouze pro interní potřeby a nebudou se
+            nikam dále šířit.
+          </p>
         </div>
 
         {sent ? (
@@ -395,7 +452,7 @@ export default function DotaznikPage() {
               )}
             </Section>
 
-            <Section title="Typy projektů" desc="Co vás zajímá?">
+            <Section title="Máte projekt/vizi/zájem?" desc="Co vás zajímá?">
               <CheckGrid
                 name="projektyZajem[]"
                 list={opts.projektyZajem}
@@ -410,6 +467,21 @@ export default function DotaznikPage() {
                 value={state.projektyZajemOther}
                 onChange={(value) => setField("projektyZajemOther", value)}
               />
+              {(state.projektyZajem.length > 0 || state.projektyZajemOther) && (
+                <div className="mt-4">
+                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                    Popište váš projekt nebo zájem
+                  </label>
+                  <textarea
+                    rows={3}
+                    name="projektPopis"
+                    value={state.projektPopis}
+                    onChange={(e) => setField("projektPopis", e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40 text-sm text-gray-800 dark:text-gray-100 resize-none"
+                    placeholder="Např.: Aplikace pro pomoc seniorům s nákupy, nebo jaký typ projektu vás zajímá..."
+                  />
+                </div>
+              )}
             </Section>
 
             <Section title="Frekvence" desc="Reálná intenzita zapojení.">
@@ -424,6 +496,64 @@ export default function DotaznikPage() {
                   Vybráno: {state.frekvence}
                 </p>
               )}
+            </Section>
+
+            <Section
+              title="Z jakého jste kraje? (nepovinné)"
+              desc="Vyberte váš region"
+            >
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                    Země
+                  </label>
+                  <select
+                    name="zeme"
+                    value={state.zeme}
+                    onChange={(e) => {
+                      setField("zeme", e.target.value);
+                      setField("kraj", ""); // Reset region when country changes
+                    }}
+                    className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40 text-sm text-gray-800 dark:text-gray-100"
+                  >
+                    <option value="">Vyberte zemi...</option>
+                    {opts.zeme.map((zeme) => (
+                      <option key={zeme} value={zeme}>
+                        {zeme}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {state.zeme && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                      Kraj/Region
+                    </label>
+                    <select
+                      name="kraj"
+                      value={state.kraj}
+                      onChange={(e) => setField("kraj", e.target.value)}
+                      className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400/40 dark:focus:ring-blue-500/40 text-sm text-gray-800 dark:text-gray-100"
+                    >
+                      <option value="">Vyberte kraj...</option>
+                      {opts.kraje[state.zeme as keyof typeof opts.kraje]?.map(
+                        (kraj) => (
+                          <option key={kraj} value={kraj}>
+                            {kraj}
+                          </option>
+                        )
+                      )}
+                    </select>
+                  </div>
+                )}
+
+                {state.zeme && state.kraj && (
+                  <p className="text-xs text-blue-600 dark:text-blue-400">
+                    Vybráno: {state.kraj}, {state.zeme}
+                  </p>
+                )}
+              </div>
             </Section>
 
             <Section
@@ -443,26 +573,6 @@ export default function DotaznikPage() {
                 placeholder="Např. export dat..."
                 value={state.projektFunkceOther}
                 onChange={(value) => setField("projektFunkceOther", value)}
-              />
-            </Section>
-
-            <Section
-              title="Chcete se zapojit?"
-              desc="Co vám pomůže najít vhodné projekty?"
-            >
-              <CheckGrid
-                name="zapojeniPomoc[]"
-                list={opts.zapojeniPomoc}
-                stateKey="zapojeniPomoc"
-                state={state}
-                toggleArr={toggleArr}
-              />
-              <OtherInput
-                label="Další potřeba"
-                name="zapojeniPomocOther"
-                placeholder="Např. lepší filtr lokality..."
-                value={state.zapojeniPomocOther}
-                onChange={(value) => setField("zapojeniPomocOther", value)}
               />
             </Section>
 
@@ -519,7 +629,17 @@ export default function DotaznikPage() {
               />
               <span>Souhlasím se zpracováním údajů (GDPR).</span>
             </label>
-
+            <div className="flex justify-center">
+              <p className="text-sm">
+                Zaškrtněte souhlas se zpracováním osobních údajů nebo-li{" "}
+                <a
+                  className="underline"
+                  href="https://cs.wikipedia.org/wiki/Obecné_nařízení_o_ochraně_osobních_údajů"
+                >
+                  Obecné nařízení o ochraně osobních údajů
+                </a>
+              </p>
+            </div>
             <div className="pt-2 flex justify-center">
               <button
                 type="submit"

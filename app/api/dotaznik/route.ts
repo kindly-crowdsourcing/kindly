@@ -7,8 +7,10 @@ const ARRAY_LIMIT = 50;
 interface SurveyData {
   role?: string;
   projektFunkce?: string[];
-  zapojeniPomoc?: string[];
   projektyZajem?: string[];
+  projektPopis?: string;
+  zeme?: string;
+  kraj?: string;
   motivace?: string[];
   frekvence?: string;
   feedback?: string;
@@ -24,8 +26,10 @@ export async function POST(req: NextRequest) {
     const {
       role = "",
       projektFunkce = [],
-      zapojeniPomoc = [],
       projektyZajem = [],
+      projektPopis = "",
+      zeme = "",
+      kraj = "",
       motivace = [],
       frekvence = "",
       feedback = "",
@@ -52,8 +56,12 @@ export async function POST(req: NextRequest) {
     const doc = {
       role: String(role || "").trim(),
       projektFunkce: normArr(projektFunkce),
-      zapojeniPomoc: normArr(zapojeniPomoc),
       projektyZajem: normArr(projektyZajem),
+      projektPopis: String(projektPopis || "")
+        .trim()
+        .slice(0, 2000),
+      zeme: String(zeme || "").trim(),
+      kraj: String(kraj || "").trim(),
       motivace: normArr(motivace),
       frekvence: String(frekvence || "").trim(),
       feedback: String(feedback || "")
