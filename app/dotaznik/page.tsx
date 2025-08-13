@@ -65,6 +65,14 @@ const initialState: FormState = {
 const OPTIONS = {
   role: ["Mám projekt / vizi", "Dobrovolník", "Investor", "Organizace"],
   projektFunkce: [
+    "Duchovní poradenství",
+    "Poradenství v oblasti financí (rozpočty, finanční plány)",
+    "Poradenství v oblasti účetnictví a daní",
+    "Fundraising",
+    "Pomoc v oblasti IT (založení webu)",
+    "Poradenství v oblasti marketingu",
+    "Project management",
+    "Právní poradenství",
     "Přehledné rozhraní",
     "Správa týmu / úkoly",
     "Kalendář & harmonogram",
@@ -84,12 +92,15 @@ const OPTIONS = {
     "Transparentní stav / progres",
   ],
   projektyZajem: [
-    "Sociální pomoc",
-    "Vzdělávání",
-    "Technologie / IT",
+    "Pomoc dětem",
+    "Pomoc seniorům",
+    "Evangelizace",
+    "Podnikání s pozitivním společenským dopadem",
+    "Pomoc znevýhodněným",
     "Životní prostředí",
     "Komunita / sousedství",
-    "Zdraví a wellbeing",
+    "Vzdělávání",
+    "Misie",
   ],
   motivace: [
     "Smysl & dopad",
@@ -384,6 +395,37 @@ export default function DotaznikPage() {
               )}
             </Section>
 
+            <Section title="Typy projektů" desc="Co vás zajímá?">
+              <CheckGrid
+                name="projektyZajem[]"
+                list={opts.projektyZajem}
+                stateKey="projektyZajem"
+                state={state}
+                toggleArr={toggleArr}
+              />
+              <OtherInput
+                label="Jiný typ"
+                name="projektyZajemOther"
+                placeholder="Např. kultura..."
+                value={state.projektyZajemOther}
+                onChange={(value) => setField("projektyZajemOther", value)}
+              />
+            </Section>
+
+            <Section title="Frekvence" desc="Reálná intenzita zapojení.">
+              <PillRadios
+                name="frekvence"
+                list={opts.frekvence}
+                value={state.frekvence}
+                onChange={(v: string) => setField("frekvence", v)}
+              />
+              {state.frekvence && (
+                <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
+                  Vybráno: {state.frekvence}
+                </p>
+              )}
+            </Section>
+
             <Section
               title="Jaké funkce by tahle platforma měla mít?"
               desc="Funkce, které byste uvítali."
@@ -424,23 +466,6 @@ export default function DotaznikPage() {
               />
             </Section>
 
-            <Section title="Typy projektů" desc="Co vás zajímá?">
-              <CheckGrid
-                name="projektyZajem[]"
-                list={opts.projektyZajem}
-                stateKey="projektyZajem"
-                state={state}
-                toggleArr={toggleArr}
-              />
-              <OtherInput
-                label="Jiný typ"
-                name="projektyZajemOther"
-                placeholder="Např. kultura..."
-                value={state.projektyZajemOther}
-                onChange={(value) => setField("projektyZajemOther", value)}
-              />
-            </Section>
-
             <Section title="Motivace" desc="Proč se zapojujete?">
               <CheckGrid
                 name="motivace[]"
@@ -456,20 +481,6 @@ export default function DotaznikPage() {
                 value={state.motivaceOther}
                 onChange={(value) => setField("motivaceOther", value)}
               />
-            </Section>
-
-            <Section title="Frekvence" desc="Reálná intenzita zapojení.">
-              <PillRadios
-                name="frekvence"
-                list={opts.frekvence}
-                value={state.frekvence}
-                onChange={(v: string) => setField("frekvence", v)}
-              />
-              {state.frekvence && (
-                <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">
-                  Vybráno: {state.frekvence}
-                </p>
-              )}
             </Section>
 
             <Section title="Doplňující poznámka">
