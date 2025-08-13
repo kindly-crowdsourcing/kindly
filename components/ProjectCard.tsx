@@ -54,7 +54,7 @@ export default function ProjectCard({
         </span>
         {hosts != "" ? (
           <span className="inline-block bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 text-xs font-medium px-2.5 py-1 rounded-lg">
-            <b>Organizátor:</b> {hosts}
+            <b>Ředitel školy:</b> {hosts}
           </span>
         ) : (
           <div></div>
