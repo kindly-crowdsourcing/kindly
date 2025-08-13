@@ -385,7 +385,7 @@ export default function DotaznikPage() {
             </Section>
 
             <Section
-              title="Máte projekt / vizi?"
+              title="Jaké funkce by tahle platforma měla mít?"
               desc="Funkce, které byste uvítali."
             >
               <CheckGrid

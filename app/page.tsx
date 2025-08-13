@@ -41,6 +41,7 @@ const sampleProjects: Array<{
   description: string;
   time: string;
   how: string;
+  hosts: string;
 }> = [
   {
     imageUrl:
@@ -52,6 +53,7 @@ const sampleProjects: Array<{
       "Zveme Tě ke studiu biblické školy Hledači pokladů! Tématem ročníku 2025 je proroctví – jedno z nejdůležitějších témat pro dnešní dobu.",
     time: "1x za 14 dní, v pondělí",
     how: "Online přes Zoom",
+    hosts: "Yva Bush",
   },
   {
     imageUrl: "ZmrzkaZKolaImg.png",
@@ -62,6 +64,7 @@ const sampleProjects: Array<{
       "Bus zastávka Ke Kateřinkám, Opatov. Každý den otevřeno 10:00 - 19:30. Pravidelně projíždíme i Centrálním Parkem na Chodově.",
     time: "Denně, 10:00-19:30",
     how: "Osobně",
+    hosts: "",
   },
   {
     imageUrl:
@@ -73,6 +76,7 @@ const sampleProjects: Array<{
       "Pomoc se zajištěním chodu organizace. Pomoc v rodinách (v případě vyžádání pacienta a pečující rodiny). ",
     time: "Občas",
     how: "Osobně",
+    hosts: "",
   },
   {
     imageUrl:
@@ -84,6 +88,7 @@ const sampleProjects: Array<{
       "Jsem křesťanka, členka Apoštolské církve (sbor CBH Praha) a sloužím evangeliem lidem na ulicích a v sociálně vyloučených lokalitách především v Ústeckém kraji, kde žiji.",
     time: "Občas",
     how: "Osobně",
+    hosts: "",
   },
 ];
 
@@ -648,6 +653,7 @@ export default function Home() {
                 description={project.description}
                 time={project.time}
                 how={project.how}
+                hosts={project.hosts}
               />
             ))}
           </div>

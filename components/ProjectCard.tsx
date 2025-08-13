@@ -9,6 +9,7 @@ interface ProjectCardProps {
   description: string;
   time: string;
   how: string;
+  hosts: string;
 }
 
 export default function ProjectCard({
@@ -19,6 +20,7 @@ export default function ProjectCard({
   description,
   time,
   how,
+  hosts,
 }: ProjectCardProps) {
   return (
     <div className="bg-white/90 dark:bg-gray-900/80 rounded-2xl border border-blue-100 dark:border-blue-900/40 shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-blue-300 dark:hover:border-blue-400/60 hover:bg-blue-50/60 dark:hover:bg-blue-900/40 transition-all duration-300 p-6 flex flex-col gap-3 group">
@@ -50,6 +52,13 @@ export default function ProjectCard({
         <span className="inline-block bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-200 text-xs font-medium px-2.5 py-1 rounded-lg">
           <b>Jak:</b> {how}
         </span>
+        {hosts != "" ? (
+          <span className="inline-block bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200 text-xs font-medium px-2.5 py-1 rounded-lg">
+            <b>Organizátor:</b> {hosts}
+          </span>
+        ) : (
+          <div></div>
+        )}
       </div>
     </div>
   );
