@@ -11,6 +11,7 @@ import {
   Sparkles,
   Globe,
 } from "lucide-react";
+import NewsletterForm from "@/components/NewsletterForm";
 
 // --- DEBUG: zjisti zda se komponenta remountuje (pak se ztratí state) ---
 const useMountDebug = () => {
@@ -38,6 +39,8 @@ interface FormState {
   motivaceOther: string;
   feedback: string;
   email: string;
+  typyProjektu: string[];
+  typyProjektuOther: string;
 }
 
 type FormAction =
@@ -61,6 +64,8 @@ const initialState: FormState = {
   motivaceOther: "",
   feedback: "",
   email: "",
+  typyProjektu: [],
+  typyProjektuOther: "",
 };
 
 // Moved out of component so object identity stays stable across renders
@@ -113,7 +118,7 @@ const OPTIONS = {
       "Lubuskie",
     ],
   },
-  projektFunkce: [
+  typyProjektu: [
     "Duchovní poradenství",
     "Poradenství v oblasti financí (rozpočty, finanční plány)",
     "Poradenství v oblasti účetnictví a daní",
@@ -122,21 +127,27 @@ const OPTIONS = {
     "Poradenství v oblasti marketingu",
     "Project management",
     "Právní poradenství",
-    "Přehledné rozhraní",
     "Správa týmu / úkoly",
+    "Sdílení know‑how",
+  ],
+  projektFunkce: [
     "Kalendář & harmonogram",
-    "Finanční podpora / fundraising",
-    "Sdílení know‑how / dokumenty",
+    "Přehledné rozhraní",
     "Veřejný profil projektu",
+    "Fundraising / způsob výběru peněz transparentně",
     "Gamifikace (odznaky, body)",
     "Možnost hlasovat o prioritách",
     "Open source (přispívat kódem)",
     "Filtrování podle dovedností",
-    "Doporučování projektů (AI)",
-    "Krátkodobé mikro‑úkoly",
+    "Doporučování projektů pomocí AI",
+    "Články / Rozhovory o cestě vizionářů i dobrovolníků",
+    "Fórum",
+    "Propojení akcí organizací",
+    "Lokalizace do více jazyků",
+    "Mezinárodní rozsah",
     "Chat / bezpečné zprávy",
-    "Ověřené (verifikované) projekty",
-    "Transparentní stav / progres",
+    "Ověřené (verifikované) projekty přes nás",
+    "Transparentní projekty",
   ],
   projektyZajem: [
     "Pomoc dětem",
@@ -144,7 +155,7 @@ const OPTIONS = {
     "Evangelizace",
     "Podnikání s pozitivním společenským dopadem",
     "Pomoc znevýhodněným",
-    "Životní prostředí",
+    "Zlepšit životní prostředí",
     "Komunita / sousedství",
     "Vzdělávání",
     "Misie",
@@ -291,7 +302,7 @@ const CheckGrid = ({
             value={v}
             checked={active}
             onChange={() => toggleArr(stateKey, v)}
-            className="mt-0.5 accent-blue-600"
+            className="mt-1 accent-blue-600"
           />
           <span className="text-gray-700 dark:text-gray-200">{v}</span>
         </label>
@@ -366,6 +377,9 @@ export default function DotaznikPage() {
       ),
       motivace: state.motivace.concat(
         state.motivaceOther ? [state.motivaceOther] : []
+      ),
+      typyProjektu: state.typyProjektu.concat(
+        state.typyProjektuOther ? [state.typyProjektuOther] : []
       ),
       // feedback and email are already in state
     };
@@ -452,7 +466,10 @@ export default function DotaznikPage() {
               )}
             </Section>
 
-            <Section title="Máte projekt/vizi/zájem?" desc="Co vás zajímá?">
+            <Section
+              title="Máte projekt či vizi?"
+              desc="Co byste rádi rozjeli a potřebujete s tím pomoci?"
+            >
               <CheckGrid
                 name="projektyZajem[]"
                 list={opts.projektyZajem}
@@ -463,7 +480,7 @@ export default function DotaznikPage() {
               <OtherInput
                 label="Jiný typ"
                 name="projektyZajemOther"
-                placeholder="Např. kultura..."
+                placeholder="Např. nový křesťanský seriál..."
                 value={state.projektyZajemOther}
                 onChange={(value) => setField("projektyZajemOther", value)}
               />
@@ -482,6 +499,26 @@ export default function DotaznikPage() {
                   />
                 </div>
               )}
+            </Section>
+
+            <Section
+              title="Typy projektů, kde byste rádi vypomohli"
+              desc="O jaký typ projektů máte zájem?"
+            >
+              <CheckGrid
+                name="typyProjektu[]"
+                list={opts.typyProjektu}
+                stateKey="typyProjektu"
+                state={state}
+                toggleArr={toggleArr}
+              />
+              <OtherInput
+                label="Jiný typ projektu"
+                name="typyProjektuOther"
+                placeholder="Např. kulturní projekty..."
+                value={state.typyProjektuOther}
+                onChange={(value) => setField("typyProjektuOther", value)}
+              />
             </Section>
 
             <Section title="Frekvence" desc="Reálná intenzita zapojení.">

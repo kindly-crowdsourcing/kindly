@@ -16,6 +16,7 @@ interface SurveyData {
   feedback?: string;
   email?: string;
   souhlas?: boolean;
+  typyProjektu?: string[];
 }
 
 export async function POST(req: NextRequest) {
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
       feedback = "",
       email = "",
       souhlas = false,
+      typyProjektu = [],
     } = body || {};
 
     if (souhlas !== true) {
@@ -69,6 +71,7 @@ export async function POST(req: NextRequest) {
         .slice(0, 5000),
       email: typeof email === "string" ? email.trim().toLowerCase() : "",
       souhlas: true,
+      typyProjektu: normArr(typyProjektu),
       userAgent: req.headers.get("user-agent") || null,
       ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || null,
       createdAt: new Date(),
