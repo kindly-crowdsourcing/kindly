@@ -671,6 +671,7 @@ export default function DotaznikPage() {
                 Zaškrtněte souhlas se zpracováním osobních údajů nebo-li{" "}
                 <a
                   className="underline"
+                  target="_blank"
                   href="https://cs.wikipedia.org/wiki/Obecné_nařízení_o_ochraně_osobních_údajů"
                 >
                   Obecné nařízení o ochraně osobních údajů
